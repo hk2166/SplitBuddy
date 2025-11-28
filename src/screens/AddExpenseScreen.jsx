@@ -29,7 +29,6 @@ export default function AddExpenseScreen({ navigation, route }) {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // Get members from the group
   const members = group?.members || [];
 
   const toggleMemberSelection = (memberId) => {
@@ -40,7 +39,6 @@ export default function AddExpenseScreen({ navigation, route }) {
         return [...prev, memberId];
       }
     });
-    // Clear error when user selects a member
     if (errors.sharedMembers) {
       setErrors((prev) => ({ ...prev, sharedMembers: null }));
     }
@@ -55,7 +53,6 @@ export default function AddExpenseScreen({ navigation, route }) {
   };
 
   const pickImage = async () => {
-    // Request permission
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (status !== "granted") {
@@ -66,7 +63,6 @@ export default function AddExpenseScreen({ navigation, route }) {
       return;
     }
 
-    // Launch image picker
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -101,7 +97,8 @@ export default function AddExpenseScreen({ navigation, route }) {
     }
 
     if (sharedMembers.length === 0) {
-      newErrors.sharedMembers = "Please select at least one member to share the cost";
+      newErrors.sharedMembers =
+        "Please select at least one member to share the cost";
     }
 
     setErrors(newErrors);
@@ -125,10 +122,8 @@ export default function AddExpenseScreen({ navigation, route }) {
         groupId,
       };
 
-      // Call API service
       const createdExpense = await createExpense(expenseData);
 
-      // Add to local context
       addExpenseToGroup(groupId, createdExpense);
 
       Alert.alert("Success", "Expense added successfully!", [
@@ -164,7 +159,6 @@ export default function AddExpenseScreen({ navigation, route }) {
         <Text style={styles.title}>Add Expense</Text>
         <Text style={styles.subtitle}>for {group.name}</Text>
 
-        {/* Title Input */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Expense Title *</Text>
           <TextInput
@@ -180,7 +174,6 @@ export default function AddExpenseScreen({ navigation, route }) {
           {errors.title && <Text style={styles.errorText}>{errors.title}</Text>}
         </View>
 
-        {/* Amount Input */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Amount *</Text>
           <TextInput
@@ -189,15 +182,17 @@ export default function AddExpenseScreen({ navigation, route }) {
             value={amount}
             onChangeText={(text) => {
               setAmount(text);
-              if (errors.amount) setErrors((prev) => ({ ...prev, amount: null }));
+              if (errors.amount)
+                setErrors((prev) => ({ ...prev, amount: null }));
             }}
             keyboardType="decimal-pad"
             placeholderTextColor="#999"
           />
-          {errors.amount && <Text style={styles.errorText}>{errors.amount}</Text>}
+          {errors.amount && (
+            <Text style={styles.errorText}>{errors.amount}</Text>
+          )}
         </View>
 
-        {/* Payer Selection */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Who Paid? *</Text>
           <View style={styles.pickerContainer}>
@@ -210,7 +205,8 @@ export default function AddExpenseScreen({ navigation, route }) {
                 ]}
                 onPress={() => {
                   setPayer(member.id);
-                  if (errors.payer) setErrors((prev) => ({ ...prev, payer: null }));
+                  if (errors.payer)
+                    setErrors((prev) => ({ ...prev, payer: null }));
                 }}
               >
                 <View
@@ -235,7 +231,6 @@ export default function AddExpenseScreen({ navigation, route }) {
           {errors.payer && <Text style={styles.errorText}>{errors.payer}</Text>}
         </View>
 
-        {/* Shared Members Selection */}
         <View style={styles.inputGroup}>
           <View style={styles.labelRow}>
             <Text style={styles.label}>Split Between *</Text>
@@ -284,7 +279,6 @@ export default function AddExpenseScreen({ navigation, route }) {
           )}
         </View>
 
-        {/* Receipt Upload */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Receipt (Optional)</Text>
           {!receiptUri ? (
@@ -304,7 +298,6 @@ export default function AddExpenseScreen({ navigation, route }) {
           )}
         </View>
 
-        {/* Save Button */}
         <TouchableOpacity
           style={[styles.saveButton, isLoading && styles.saveButtonDisabled]}
           onPress={handleSaveExpense}

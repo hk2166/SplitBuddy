@@ -6,7 +6,6 @@ import {
   Modal,
   TextInput,
   Alert,
-  Pressable,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { useGroups } from "../context/GroupContext";
@@ -17,7 +16,6 @@ export default function GroupDetailsScreen({ navigation, route }) {
   const { getGroup, addMember, updateMember, deleteMember } = useGroups();
   const [group, setGroup] = useState(null);
 
-  // Modal states
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [newMemberName, setNewMemberName] = useState("");
@@ -31,7 +29,6 @@ export default function GroupDetailsScreen({ navigation, route }) {
     }
   }, [groupId, getGroup]);
 
-  // Refresh group data when modal closes
   const refreshGroup = () => {
     if (groupId) {
       const updatedGroup = getGroup(groupId);
@@ -103,27 +100,159 @@ export default function GroupDetailsScreen({ navigation, route }) {
     );
   }
 
-export default function GroupDetailsScreen({ navigation, route }) {
-  const { groupId } = route.params || {};
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Group Details</Text>
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.tripName}>{group.name}</Text>
+        {group.description && (
+          <Text style={styles.tripDescription}>{group.description}</Text>
+        )}
+        <Text style={styles.tripTotal}>
+          Total: ${group.totalExpenses.toFixed(2)}
+        </Text>
+      </View>
 
-      <Button
-        title="Add Expense"
-        onPress={() => navigation.navigate("AddExpense", { groupId })}
-      />
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Members</Text>
+          <TouchableOpacity
+            style={styles.addMemberButton}
+            onPress={() => setAddModalVisible(true)}
+          >
+            <Text style={styles.addMemberButtonText}>+ Add Member</Text>
+          </TouchableOpacity>
+        </View>
 
-      <Button
-        title="Settlement Summary"
-        onPress={() => navigation.navigate("Settlement")}
-      />
+        <View style={styles.membersList}>
+          {group.members && group.members.length > 0 ? (
+            group.members.map((member) => (
+              <View key={member.id} style={styles.memberCard}>
+                <View style={styles.memberInfo}>
+                  <View style={styles.memberAvatar}>
+                    <Text style={styles.memberInitial}>
+                      {member.name.charAt(0).toUpperCase()}
+                    </Text>
+                  </View>
+                  <Text style={styles.memberName}>{member.name}</Text>
+                </View>
+                <View style={styles.memberActions}>
+                  <TouchableOpacity
+                    style={styles.editButton}
+                    onPress={() => openEditModal(member)}
+                  >
+                    <Text style={styles.editButtonText}>Edit</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => handleDeleteMember(member)}
+                  >
+                    <Text style={styles.deleteButtonText}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))
+          ) : (
+            <Text style={styles.emptyText}>No members yet</Text>
+          )}
+        </View>
+      </View>
 
-      <Button
-        title="Activity Log"
-        onPress={() => navigation.navigate("ActivityLog")}
-      />
-    </View>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Actions</Text>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => navigation.navigate("AddExpense", { groupId })}
+        >
+          <Text style={styles.actionButtonText}>Add Expense</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => navigation.navigate("Settlement", { groupId })}
+        >
+          <Text style={styles.actionButtonText}>Settlement Summary</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => navigation.navigate("ActivityLog", { groupId })}
+        >
+          <Text style={styles.actionButtonText}>Activity Log</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={addModalVisible}
+        onRequestClose={() => setAddModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Add New Member</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Enter member name"
+              value={newMemberName}
+              onChangeText={setNewMemberName}
+              autoFocus
+            />
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => {
+                  setAddModalVisible(false);
+                  setNewMemberName("");
+                }}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.confirmButton]}
+                onPress={handleAddMember}
+              >
+                <Text style={styles.confirmButtonText}>Add</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={editModalVisible}
+        onRequestClose={() => setEditModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Edit Member</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Enter member name"
+              value={editMemberName}
+              onChangeText={setEditMemberName}
+              autoFocus
+            />
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => {
+                  setEditModalVisible(false);
+                  setEditingMember(null);
+                  setEditMemberName("");
+                }}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.confirmButton]}
+                onPress={handleEditMember}
+              >
+                <Text style={styles.confirmButtonText}>Update</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </ScrollView>
   );
 }

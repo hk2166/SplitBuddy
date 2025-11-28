@@ -63,7 +63,6 @@ export const GroupProvider = ({ children }) => {
     );
   };
 
-  // Member management functions
   const addMember = (groupId, memberName) => {
     if (!memberName.trim()) return null;
 

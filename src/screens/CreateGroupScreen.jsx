@@ -55,7 +55,6 @@ export default function CreateGroupScreen({ navigation }) {
       {
         text: "OK",
         onPress: () => {
-          // Navigate to the newly created group details
           navigation.navigate("GroupDetails", { groupId: newGroup.id });
         },
       },
@@ -73,7 +72,6 @@ export default function CreateGroupScreen({ navigation }) {
       >
         <Text style={styles.title}>Create New Trip</Text>
 
-        {/* Group Name Input */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Trip Name *</Text>
           <TextInput
@@ -85,7 +83,6 @@ export default function CreateGroupScreen({ navigation }) {
           />
         </View>
 
-        {/* Description Input */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Description (Optional)</Text>
           <TextInput
@@ -99,7 +96,6 @@ export default function CreateGroupScreen({ navigation }) {
           />
         </View>
 
-        {/* Members Section */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Members *</Text>
           <View style={styles.addMemberContainer}>
@@ -120,7 +116,6 @@ export default function CreateGroupScreen({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          {/* Members List */}
           {members.length > 0 && (
             <View style={styles.membersList}>
               {members.map((member) => (
@@ -138,7 +133,6 @@ export default function CreateGroupScreen({ navigation }) {
           )}
         </View>
 
-        {/* Create Button */}
         <TouchableOpacity
           style={[
             styles.createButton,
