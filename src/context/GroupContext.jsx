@@ -65,6 +65,67 @@ export const GroupProvider = ({ children }) => {
     );
   };
 
+  const updateExpenseInGroup = (groupId, expenseId, updates) => {
+    setGroups((prev) =>
+      prev.map((group) => {
+        if (group.id === groupId) {
+          const oldExpense = group.expenses.find((e) => e.id === expenseId);
+          const oldAmount = oldExpense ? parseFloat(oldExpense.amount) : 0;
+          const newAmount = updates.amount
+            ? parseFloat(updates.amount)
+            : oldAmount;
+
+          return {
+            ...group,
+            expenses: group.expenses.map((expense) =>
+              expense.id === expenseId
+                ? {
+                    ...expense,
+                    ...updates,
+                    updatedAt: new Date().toISOString(),
+                  }
+                : expense
+            ),
+            totalExpenses: group.totalExpenses - oldAmount + newAmount,
+          };
+        }
+        return group;
+      })
+    );
+    return true;
+  };
+
+  const deleteExpenseFromGroup = (groupId, expenseId) => {
+    setGroups((prev) =>
+      prev.map((group) => {
+        if (group.id === groupId) {
+          const expenseToDelete = group.expenses.find(
+            (e) => e.id === expenseId
+          );
+          const amountToSubtract = expenseToDelete
+            ? parseFloat(expenseToDelete.amount)
+            : 0;
+
+          return {
+            ...group,
+            expenses: group.expenses.filter(
+              (expense) => expense.id !== expenseId
+            ),
+            totalExpenses: group.totalExpenses - amountToSubtract,
+          };
+        }
+        return group;
+      })
+    );
+    return true;
+  };
+
+  const getExpense = (groupId, expenseId) => {
+    const group = groups.find((g) => g.id === groupId);
+    if (!group) return null;
+    return group.expenses.find((e) => e.id === expenseId);
+  };
+
   const addMember = (groupId, memberName) => {
     if (!memberName.trim()) return null;
 
@@ -148,6 +209,9 @@ export const GroupProvider = ({ children }) => {
     deleteGroup,
     getGroup,
     addExpenseToGroup,
+    updateExpenseInGroup,
+    deleteExpenseFromGroup,
+    getExpense,
     addMember,
     updateMember,
     deleteMember,

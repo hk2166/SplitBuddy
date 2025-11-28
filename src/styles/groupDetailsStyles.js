@@ -87,9 +87,40 @@ export const groupDetailsStyles = StyleSheet.create({
     fontSize: fontSize.lg,
     fontWeight: "bold",
   },
+  memberDetails: {
+    flex: 1,
+  },
   memberName: {
     fontSize: fontSize.md,
     color: colors.text,
+    fontWeight: "500",
+    marginBottom: 4,
+  },
+  balanceInfo: {
+    marginTop: 2,
+  },
+  balanceLabel: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginBottom: 2,
+  },
+  balanceValue: {
+    fontWeight: "600",
+    color: colors.text,
+  },
+  balancePositive: {
+    fontSize: 13,
+    color: "#10B981",
+    fontWeight: "600",
+  },
+  balanceNegative: {
+    fontSize: 13,
+    color: "#EF4444",
+    fontWeight: "600",
+  },
+  balanceSettled: {
+    fontSize: 13,
+    color: "#6B7280",
     fontWeight: "500",
   },
   memberActions: {
@@ -125,6 +156,42 @@ export const groupDetailsStyles = StyleSheet.create({
     color: colors.textLight,
     textAlign: "center",
     paddingVertical: spacing.xl,
+  },
+  expensesList: {
+    gap: spacing.md,
+  },
+  expenseCard: {
+    backgroundColor: colors.cardBackground,
+    padding: spacing.md,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  expenseHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: spacing.sm,
+  },
+  expenseTitle: {
+    fontSize: fontSize.md,
+    fontWeight: "600",
+    color: colors.text,
+    flex: 1,
+  },
+  expenseAmount: {
+    fontSize: fontSize.lg,
+    fontWeight: "bold",
+    color: colors.primary,
+  },
+  expensePayer: {
+    fontSize: fontSize.sm,
+    color: colors.textSecondary,
+    marginBottom: 2,
+  },
+  expenseShared: {
+    fontSize: fontSize.sm,
+    color: colors.textLight,
   },
   actionButton: {
     backgroundColor: colors.cardBackground,

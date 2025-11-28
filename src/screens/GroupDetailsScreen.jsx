@@ -7,8 +7,12 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useGroups } from "../context/GroupContext";
+import {
+  calculateBalances,
+  formatCurrency,
+} from "../services/balanceCalculator";
 import { groupDetailsStyles as styles } from "../styles/groupDetailsStyles";
 
 export default function GroupDetailsScreen({ navigation, route }) {
@@ -28,6 +32,13 @@ export default function GroupDetailsScreen({ navigation, route }) {
       setGroup(foundGroup);
     }
   }, [groupId, getGroup]);
+
+  const balances = useMemo(() => {
+    if (!group || !group.expenses || !group.members) {
+      return {};
+    }
+    return calculateBalances(group.expenses, group.members);
+  }, [group]);
 
   const refreshGroup = () => {
     if (groupId) {
@@ -125,32 +136,69 @@ export default function GroupDetailsScreen({ navigation, route }) {
 
         <View style={styles.membersList}>
           {group.members && group.members.length > 0 ? (
-            group.members.map((member) => (
-              <View key={member.id} style={styles.memberCard}>
-                <View style={styles.memberInfo}>
-                  <View style={styles.memberAvatar}>
-                    <Text style={styles.memberInitial}>
-                      {member.name.charAt(0).toUpperCase()}
-                    </Text>
+            group.members.map((member) => {
+              const balance = balances[member.id];
+              const balanceAmount = balance ? balance.balance : 0;
+              const isPositive = balanceAmount > 0.01;
+              const isNegative = balanceAmount < -0.01;
+
+              return (
+                <View key={member.id} style={styles.memberCard}>
+                  <View style={styles.memberInfo}>
+                    <View style={styles.memberAvatar}>
+                      <Text style={styles.memberInitial}>
+                        {member.name.charAt(0).toUpperCase()}
+                      </Text>
+                    </View>
+                    <View style={styles.memberDetails}>
+                      <Text style={styles.memberName}>{member.name}</Text>
+                      {balance && (
+                        <View style={styles.balanceInfo}>
+                          <Text style={styles.balanceLabel}>
+                            Paid:{" "}
+                            <Text style={styles.balanceValue}>
+                              {formatCurrency(balance.paid)}
+                            </Text>
+                            {" • "}
+                            Share:{" "}
+                            <Text style={styles.balanceValue}>
+                              {formatCurrency(balance.share)}
+                            </Text>
+                          </Text>
+                          {isPositive && (
+                            <Text style={styles.balancePositive}>
+                              Gets back {formatCurrency(balanceAmount)}
+                            </Text>
+                          )}
+                          {isNegative && (
+                            <Text style={styles.balanceNegative}>
+                              Owes {formatCurrency(balanceAmount)}
+                            </Text>
+                          )}
+                          {!isPositive && !isNegative && (
+                            <Text style={styles.balanceSettled}>Settled ✓</Text>
+                          )}
+                        </View>
+                      )}
+                    </View>
                   </View>
-                  <Text style={styles.memberName}>{member.name}</Text>
+                  <View style={styles.memberActions}>
+                    <TouchableOpacity
+                      style={styles.editButton}
+                      onPress={() => openEditModal(member)}
+                    >
+                      <Text style={styles.editButtonText}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => handleDeleteMember(member)}
+                    >
+                      <Text style={styles.deleteButtonText}>✕</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <View style={styles.memberActions}>
-                  <TouchableOpacity
-                    style={styles.editButton}
-                    onPress={() => openEditModal(member)}
-                  >
-                    <Text style={styles.editButtonText}>Edit</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => handleDeleteMember(member)}
-                  >
-                    <Text style={styles.deleteButtonText}>✕</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))
+              );
+            })
           ) : (
             <Text style={styles.emptyText}>No members yet</Text>
           )}
@@ -158,13 +206,54 @@ export default function GroupDetailsScreen({ navigation, route }) {
       </View>
 
       <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Expenses</Text>
+          <TouchableOpacity
+            style={styles.addMemberButton}
+            onPress={() => navigation.navigate("AddExpense", { groupId })}
+          >
+            <Text style={styles.addMemberButtonText}>+ Add Expense</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.expensesList}>
+          {group.expenses && group.expenses.length > 0 ? (
+            group.expenses.map((expense) => {
+              const payerName =
+                group.members.find((m) => m.id === expense.payer)?.name ||
+                "Unknown";
+              return (
+                <TouchableOpacity
+                  key={expense.id}
+                  style={styles.expenseCard}
+                  onPress={() =>
+                    navigation.navigate("EditExpense", {
+                      groupId,
+                      expenseId: expense.id,
+                    })
+                  }
+                >
+                  <View style={styles.expenseHeader}>
+                    <Text style={styles.expenseTitle}>{expense.title}</Text>
+                    <Text style={styles.expenseAmount}>
+                      ${parseFloat(expense.amount).toFixed(2)}
+                    </Text>
+                  </View>
+                  <Text style={styles.expensePayer}>Paid by {payerName}</Text>
+                  <Text style={styles.expenseShared}>
+                    Split between {expense.sharedMembers?.length || 0} member(s)
+                  </Text>
+                </TouchableOpacity>
+              );
+            })
+          ) : (
+            <Text style={styles.emptyText}>No expenses yet</Text>
+          )}
+        </View>
+      </View>
+
+      <View style={styles.section}>
         <Text style={styles.sectionTitle}>Actions</Text>
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={() => navigation.navigate("AddExpense", { groupId })}
-        >
-          <Text style={styles.actionButtonText}>Add Expense</Text>
-        </TouchableOpacity>
         <TouchableOpacity
           style={styles.actionButton}
           onPress={() => navigation.navigate("Settlement", { groupId })}
