@@ -14,7 +14,12 @@ export default function ArchiveScreen({ navigation }) {
 
   const renderGroupItem = ({ item }) => (
     <Pressable
-      onPress={() => navigation.navigate("GroupDetails", { groupId: item.id })}
+      onPress={() =>
+        navigation.navigate("GroupsTab", {
+          screen: "GroupDetails",
+          params: { groupId: item.id },
+        })
+      }
     >
       <CrumpledCard style={styles.groupCard}>
         <View style={styles.groupHeader}>
