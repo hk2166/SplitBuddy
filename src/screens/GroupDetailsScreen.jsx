@@ -56,6 +56,20 @@ export default function GroupDetailsScreen({ navigation, route }) {
     return calculateBalances(group.expenses, group.members);
   }, [group]);
 
+  const { totalSpent, leftToSettle } = useMemo(() => {
+    if (!group || !group.expenses) return { totalSpent: 0, leftToSettle: 0 };
+
+    const spent = group.expenses
+      .filter((e) => !e.isPayment)
+      .reduce((sum, e) => sum + parseFloat(e.amount), 0);
+
+    const settled = Object.values(balances)
+      .filter((b) => b.balance > 0.01)
+      .reduce((sum, b) => sum + b.balance, 0);
+
+    return { totalSpent: spent, leftToSettle: settled };
+  }, [group, balances]);
+
   const refreshGroup = () => {
     if (groupId) {
       const updatedGroup = getGroup(groupId);
@@ -136,9 +150,21 @@ export default function GroupDetailsScreen({ navigation, route }) {
           {group.description ? (
             <Text style={styles.tripDescription}>{group.description}</Text>
           ) : null}
-          <Text style={styles.tripTotal}>
-            Total Chaos: ${group.totalExpenses.toFixed(0)}
-          </Text>
+          <View style={styles.statsRow}>
+            <View style={styles.statItem}>
+              <Text style={styles.statLabel}>Total Spent</Text>
+              <Text style={styles.statValue}>
+                {formatCurrency(totalSpent)}
+              </Text>
+            </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statLabel}>Left to Settle</Text>
+              <Text style={[styles.statValue, { color: theme.colors.aperitivoSpritz }]}>
+                {formatCurrency(leftToSettle)}
+              </Text>
+            </View>
+          </View>
         </View>
 
         {/* Members Section */}
@@ -189,10 +215,10 @@ export default function GroupDetailsScreen({ navigation, route }) {
                       ]}
                     >
                       {isPositive
-                        ? `+ ${formatCurrency(balanceAmount)} `
+                        ? `Gets back ${formatCurrency(balanceAmount)}`
                         : isNegative
-                          ? `- ${formatCurrency(Math.abs(balanceAmount))} `
-                          : "Even"}
+                          ? `Owes ${formatCurrency(Math.abs(balanceAmount))}`
+                          : "Settled"}
                     </Text>
                   </CrumpledCard>
                 );
@@ -364,9 +390,37 @@ const styles = StyleSheet.create({
     color: theme.colors.warmAsh,
     marginBottom: 8,
   },
-  tripTotal: {
+  statsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: theme.colors.white,
+    padding: 16,
+    borderRadius: theme.radii.card,
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.05)",
+  },
+  statItem: {
+    flex: 1,
+    alignItems: "center",
+  },
+  statDivider: {
+    width: 1,
+    height: "80%",
+    backgroundColor: theme.colors.warmAsh,
+    opacity: 0.2,
+  },
+  statLabel: {
+    ...theme.typography.caption,
+    color: theme.colors.warmAsh,
+    marginBottom: 4,
+    textTransform: "uppercase",
+    letterSpacing: 1,
+  },
+  statValue: {
     ...theme.typography.title2,
-    color: theme.colors.aperitivoSpritz,
+    color: theme.colors.burntInk,
+    fontSize: 20,
   },
   section: {
     marginBottom: 32,
