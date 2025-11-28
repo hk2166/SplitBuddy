@@ -6,37 +6,58 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useGroups } from "../context/GroupContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function HomeScreen({ navigation }) {
   const { groups } = useGroups();
+  const { colors } = useTheme();
 
   const activeGroups = groups.filter((g) => g.totalExpenses > 0).slice(0, 3);
   const totalBalance = groups.reduce((sum, g) => sum + g.totalExpenses, 0);
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
+      <View
+        style={[
+          styles.header,
+          { backgroundColor: colors.surface, borderBottomColor: colors.border },
+        ]}
+      >
         <Text style={styles.title}>Dashboard</Text>
         <Text style={styles.subtitle}>Welcome back!</Text>
       </View>
 
       <View style={styles.statsContainer}>
-        <View style={styles.statCard}>
-          <Text style={styles.statValue}>{groups.length}</Text>
-          <Text style={styles.statLabel}>Total Groups</Text>
+        <View style={[styles.statCard, { backgroundColor: colors.card }]}>
+          <Text style={[styles.statValue, { color: colors.primary }]}>
+            {groups.length}
+          </Text>
+          <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+            Total Groups
+          </Text>
         </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statValue}>${totalBalance.toFixed(2)}</Text>
-          <Text style={styles.statLabel}>Total Expenses</Text>
+        <View style={[styles.statCard, { backgroundColor: colors.card }]}>
+          <Text style={[styles.statValue, { color: colors.primary }]}>
+            ${totalBalance.toFixed(2)}
+          </Text>
+          <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+            Total Expenses
+          </Text>
         </View>
       </View>
 
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Recent Activity</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+            Recent Activity
+          </Text>
           {groups.length > 0 && (
             <TouchableOpacity onPress={() => navigation.navigate("GroupsTab")}>
-              <Text style={styles.seeAllText}>See All</Text>
+              <Text style={[styles.seeAllText, { color: colors.primary }]}>
+                See All
+              </Text>
             </TouchableOpacity>
           )}
         </View>
@@ -45,7 +66,7 @@ export default function HomeScreen({ navigation }) {
           activeGroups.map((group) => (
             <TouchableOpacity
               key={group.id}
-              style={styles.activityCard}
+              style={[styles.activityCard, { backgroundColor: colors.card }]}
               onPress={() =>
                 navigation.navigate("GroupsTab", {
                   screen: "GroupDetails",
@@ -54,21 +75,32 @@ export default function HomeScreen({ navigation }) {
               }
             >
               <View style={styles.activityInfo}>
-                <Text style={styles.activityName}>{group.name}</Text>
-                <Text style={styles.activityMembers}>
+                <Text style={[styles.activityName, { color: colors.text }]}>
+                  {group.name}
+                </Text>
+                <Text
+                  style={[
+                    styles.activityMembers,
+                    { color: colors.textSecondary },
+                  ]}
+                >
                   {group.members?.length || 0} members
                 </Text>
               </View>
-              <Text style={styles.activityAmount}>
+              <Text style={[styles.activityAmount, { color: colors.primary }]}>
                 ${group.totalExpenses.toFixed(2)}
               </Text>
             </TouchableOpacity>
           ))
         ) : (
-          <View style={styles.emptyActivity}>
+          <View
+            style={[styles.emptyActivity, { backgroundColor: colors.card }]}
+          >
             <Text style={styles.emptyIcon}>📊</Text>
-            <Text style={styles.emptyText}>No activity yet</Text>
-            <Text style={styles.emptySubtext}>
+            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+              No activity yet
+            </Text>
+            <Text style={[styles.emptySubtext, { color: colors.textTertiary }]}>
               Create a group and add expenses to see activity
             </Text>
           </View>
@@ -76,9 +108,11 @@ export default function HomeScreen({ navigation }) {
       </View>
 
       <View style={styles.quickActions}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          Quick Actions
+        </Text>
         <TouchableOpacity
-          style={styles.actionButton}
+          style={[styles.actionButton, { backgroundColor: colors.card }]}
           onPress={() =>
             navigation.navigate("GroupsTab", {
               screen: "CreateGroup",
@@ -86,14 +120,18 @@ export default function HomeScreen({ navigation }) {
           }
         >
           <Text style={styles.actionIcon}>➕</Text>
-          <Text style={styles.actionText}>Create New Group</Text>
+          <Text style={[styles.actionText, { color: colors.text }]}>
+            Create New Group
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.actionButton}
+          style={[styles.actionButton, { backgroundColor: colors.card }]}
           onPress={() => navigation.navigate("GroupsTab")}
         >
           <Text style={styles.actionIcon}>👥</Text>
-          <Text style={styles.actionText}>View All Groups</Text>
+          <Text style={[styles.actionText, { color: colors.text }]}>
+            View All Groups
+          </Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

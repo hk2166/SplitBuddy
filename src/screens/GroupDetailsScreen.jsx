@@ -17,7 +17,8 @@ import { groupDetailsStyles as styles } from "../styles/groupDetailsStyles";
 
 export default function GroupDetailsScreen({ navigation, route }) {
   const { groupId } = route.params || {};
-  const { getGroup, addMember, updateMember, deleteMember, deleteExpense } = useGroups();
+  const { getGroup, addMember, updateMember, deleteMember, deleteExpense } =
+    useGroups();
   const [group, setGroup] = useState(null);
 
   const [addModalVisible, setAddModalVisible] = useState(false);
@@ -65,8 +66,6 @@ export default function GroupDetailsScreen({ navigation, route }) {
       ]
     );
   };
-
-
 
   const handleAddMember = () => {
     if (!newMemberName.trim()) {
@@ -228,6 +227,12 @@ export default function GroupDetailsScreen({ navigation, route }) {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Actions</Text>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => navigation.navigate("AddExpense", { groupId })}
+        >
+          <Text style={styles.actionButtonText}>Add Expense</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.actionButton}
           onPress={() => navigation.navigate("Settlement", { groupId })}

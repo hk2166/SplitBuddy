@@ -23,7 +23,7 @@ export default function GroupsNavigator() {
     headerTitleStyle: {
       fontWeight: "600",
     },
-    headerRight: () => <ThemeToggleButton style={{ marginRight: 8 }} />,
+    
   };
 
   return (

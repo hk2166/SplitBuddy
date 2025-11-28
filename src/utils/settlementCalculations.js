@@ -7,9 +7,15 @@ export const calculateBalances = (expenses, members, payments = []) => {
 
   expenses.forEach((expense) => {
     const shareAmount = expense.amount / expense.sharedMembers.length;
-    balances[expense.payer] += expense.amount;
-    expense.sharedMembers.forEach((id) => {
-      balances[id] -= shareAmount;
+    // Handle payer being either an object or an ID string
+    const payerId =
+      typeof expense.payer === "object" ? expense.payer.id : expense.payer;
+    balances[payerId] += expense.amount;
+
+    expense.sharedMembers.forEach((member) => {
+      // Handle sharedMembers being either objects or ID strings
+      const memberId = typeof member === "object" ? member.id : member;
+      balances[memberId] -= shareAmount;
     });
   });
 
@@ -66,10 +72,20 @@ export const getMemberSummary = (expenses, memberId, payments = []) => {
   let totalOwed = 0;
 
   expenses.forEach((expense) => {
-    if (expense.payer === memberId) {
+    // Handle payer being either an object or an ID string
+    const payerId =
+      typeof expense.payer === "object" ? expense.payer.id : expense.payer;
+    if (payerId === memberId) {
       totalPaid += expense.amount;
     }
-    if (expense.sharedMembers.includes(memberId)) {
+
+    // Check if member is in sharedMembers array (handle both objects and IDs)
+    const isSharedMember = expense.sharedMembers.some((member) => {
+      const id = typeof member === "object" ? member.id : member;
+      return id === memberId;
+    });
+
+    if (isSharedMember) {
       totalOwed += expense.amount / expense.sharedMembers.length;
     }
   });

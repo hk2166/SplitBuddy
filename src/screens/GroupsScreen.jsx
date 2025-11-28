@@ -7,24 +7,33 @@ import {
   Pressable,
 } from "react-native";
 import { useGroups } from "../context/GroupContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function GroupsScreen({ navigation }) {
   const { groups } = useGroups();
+  const { colors } = useTheme();
 
   const renderTripCard = ({ item }) => (
     <TouchableOpacity
-      style={styles.tripCard}
+      style={[styles.tripCard, { backgroundColor: colors.card }]}
       onPress={() => navigation.navigate("GroupDetails", { groupId: item.id })}
     >
       <View style={styles.tripHeader}>
-        <Text style={styles.tripName}>{item.name}</Text>
-        <Text style={styles.tripAmount}>${item.totalExpenses.toFixed(2)}</Text>
+        <Text style={[styles.tripName, { color: colors.text }]}>
+          {item.name}
+        </Text>
+        <Text style={[styles.tripAmount, { color: colors.primary }]}>
+          ${item.totalExpenses.toFixed(2)}
+        </Text>
       </View>
-      <Text style={styles.tripMembers}>
+      <Text style={[styles.tripMembers, { color: colors.textSecondary }]}>
         {item.members?.length || 0} members
       </Text>
       {item.description && (
-        <Text style={styles.tripDescription} numberOfLines={1}>
+        <Text
+          style={[styles.tripDescription, { color: colors.textTertiary }]}
+          numberOfLines={1}
+        >
           {item.description}
         </Text>
       )}
@@ -34,12 +43,14 @@ export default function GroupsScreen({ navigation }) {
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyIcon}>🏖️</Text>
-      <Text style={styles.emptyTitle}>No Trips Yet</Text>
-      <Text style={styles.emptySubtitle}>
+      <Text style={[styles.emptyTitle, { color: colors.text }]}>
+        No Trips Yet
+      </Text>
+      <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
         Create your first trip to start splitting expenses with friends
       </Text>
       <Pressable
-        style={styles.createButton}
+        style={[styles.createButton, { backgroundColor: colors.primary }]}
         onPress={() => navigation.navigate("CreateGroup")}
       >
         <Text style={styles.createButtonText}>Create Your First Trip</Text>
@@ -48,12 +59,17 @@ export default function GroupsScreen({ navigation }) {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>All Groups</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View
+        style={[
+          styles.header,
+          { backgroundColor: colors.surface, borderBottomColor: colors.border },
+        ]}
+      >
+        
         {groups.length > 0 && (
           <TouchableOpacity
-            style={styles.addButton}
+            style={[styles.addButton, { backgroundColor: colors.primary }]}
             onPress={() => navigation.navigate("CreateGroup")}
           >
             <Text style={styles.addButtonText}>+ New Trip</Text>
