@@ -4,6 +4,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useGroups } from "../context/GroupContext";
 import { useTheme } from "../context/ThemeContext";
@@ -132,6 +133,33 @@ export default function HomeScreen({ navigation }) {
           <Text style={[styles.actionText, { color: colors.text }]}>
             View All Groups
           </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.actionButton, { marginTop: 10 }]}
+          onPress={() => {
+            Alert.alert(
+              "Log Out",
+              "Are you sure you want to log out?",
+              [
+                { text: "Cancel", style: "cancel" },
+                {
+                  text: "Log Out",
+                  style: "destructive",
+                  onPress: () => {
+                    // Reset the root navigator state to show Login screen
+                    // We use getParent() to access the stack navigator since we are in a tab navigator
+                    navigation.getParent()?.reset({
+                      index: 0,
+                      routes: [{ name: "Login" }],
+                    });
+                  },
+                },
+              ]
+            );
+          }}
+        >
+          <Text style={styles.actionIcon}>🚪</Text>
+          <Text style={[styles.actionText, { color: "#EF4444" }]}>Log Out</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
