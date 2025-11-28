@@ -20,6 +20,7 @@ export const GroupProvider = ({ children }) => {
       description: group.description || "",
       members: group.members || [],
       expenses: [],
+      payments: [],
       totalExpenses: 0,
       activityLog: [],
       isSettled: false,
@@ -216,15 +217,49 @@ export const GroupProvider = ({ children }) => {
       prev.map((group) =>
         group.id === groupId
           ? {
-            ...group,
-            isSettled: true,
-            settledAt: new Date().toISOString(),
-          }
+              ...group,
+              isSettled: true,
+              settledAt: new Date().toISOString(),
+            }
           : group
       )
     );
   };
 
+  const addPayment = (groupId, payment) => {
+    setGroups((prev) =>
+      prev.map((group) => {
+        if (group.id === groupId) {
+          const newPayment = {
+            id: Date.now().toString(),
+            ...payment,
+            createdAt: new Date().toISOString(),
+          };
+          return {
+            ...group,
+            payments: [...(group.payments || []), newPayment],
+          };
+        }
+        return group;
+      })
+    );
+    return true;
+  };
+
+  const removePayment = (groupId, paymentId) => {
+    setGroups((prev) =>
+      prev.map((group) => {
+        if (group.id === groupId) {
+          return {
+            ...group,
+            payments: (group.payments || []).filter((p) => p.id !== paymentId),
+          };
+        }
+        return group;
+      })
+    );
+    return true;
+  };
   const value = {
     groups,
     addGroup,
@@ -240,6 +275,8 @@ export const GroupProvider = ({ children }) => {
     updateMember,
     deleteMember,
     settleGroup,
+    addPayment,
+    removePayment,
   };
 
   return (

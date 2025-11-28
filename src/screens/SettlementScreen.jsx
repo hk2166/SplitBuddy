@@ -16,7 +16,7 @@ import {
 
 export default function SettlementScreen({ navigation, route }) {
   const { colors } = useTheme();
-  const { getGroup, settleGroup } = useGroups();
+  const { getGroup, settleGroup, addPayment, removePayment } = useGroups();
   const { groupId } = route.params || {};
   const group = getGroup(groupId);
 
@@ -30,28 +30,59 @@ export default function SettlementScreen({ navigation, route }) {
     );
   }
 
-  const { members, expenses, isSettled } = group;
+  const { members, expenses, isSettled, payments = [] } = group;
 
-  // Calculate balances and settlements
-  const balances = calculateBalances(expenses, members);
+  const balances = calculateBalances(expenses, members, payments);
   const settlements = calculateSettlements(balances, members);
 
-  // Get member name by ID
   const getMemberName = (memberId) => {
     const member = members.find((m) => m.id === memberId);
     return member ? member.name : "Unknown";
   };
 
+  const handleMarkPaid = (settlement) => {
+    Alert.alert(
+      "Mark as Paid",
+      `Confirm that ${getMemberName(
+        settlement.from
+      )} paid ₹${settlement.amount.toFixed(2)} to ${getMemberName(
+        settlement.to
+      )}?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Mark Paid",
+          onPress: () => {
+            addPayment(groupId, {
+              from: settlement.from,
+              to: settlement.to,
+              amount: settlement.amount,
+            });
+            Alert.alert("Success", "Payment marked as complete!");
+          },
+        },
+      ]
+    );
+  };
+
   const handleSettleTrip = () => {
     Alert.alert(
       "Settle Trip",
-      "Are you sure you want to settle this trip? This will mark it as complete and move it to archives.",
+      "This will mark all suggested payments as paid and archive the trip.",
       [
         { text: "Cancel", style: "cancel" },
         {
           text: "Settle",
           style: "destructive",
           onPress: () => {
+            settlements.forEach((settlement) => {
+              addPayment(groupId, {
+                from: settlement.from,
+                to: settlement.to,
+                amount: settlement.amount,
+              });
+            });
+
             settleGroup(groupId);
             Alert.alert("Success", "Trip settled successfully!", [
               {
@@ -78,7 +109,9 @@ export default function SettlementScreen({ navigation, route }) {
       </Text>
 
       {isSettled && (
-        <View style={[styles.settledBadge, { backgroundColor: colors.success }]}>
+        <View
+          style={[styles.settledBadge, { backgroundColor: colors.success }]}
+        >
           <Text style={styles.settledText}>✓ Trip Settled</Text>
         </View>
       )}
@@ -90,7 +123,7 @@ export default function SettlementScreen({ navigation, route }) {
         </Text>
 
         {members.map((member) => {
-          const summary = getMemberSummary(expenses, member.id);
+          const summary = getMemberSummary(expenses, member.id, payments);
           const balance = balances[member.id] || 0;
 
           return (
@@ -113,22 +146,27 @@ export default function SettlementScreen({ navigation, route }) {
                         balance > 0.01
                           ? colors.success
                           : balance < -0.01
-                            ? colors.error
-                            : colors.textSecondary,
+                          ? colors.error
+                          : colors.textSecondary,
                     },
                   ]}
                 >
                   {balance > 0.01
                     ? `+₹${balance.toFixed(2)}`
                     : balance < -0.01
-                      ? `-₹${Math.abs(balance).toFixed(2)}`
-                      : "₹0.00"}
+                    ? `-₹${Math.abs(balance).toFixed(2)}`
+                    : "₹0.00"}
                 </Text>
               </View>
 
               <View style={styles.memberDetails}>
                 <View style={styles.detailRow}>
-                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
+                  <Text
+                    style={[
+                      styles.detailLabel,
+                      { color: colors.textSecondary },
+                    ]}
+                  >
                     Total Paid:
                   </Text>
                   <Text style={[styles.detailValue, { color: colors.text }]}>
@@ -136,7 +174,12 @@ export default function SettlementScreen({ navigation, route }) {
                   </Text>
                 </View>
                 <View style={styles.detailRow}>
-                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
+                  <Text
+                    style={[
+                      styles.detailLabel,
+                      { color: colors.textSecondary },
+                    ]}
+                  >
                     Total Owed:
                   </Text>
                   <Text style={[styles.detailValue, { color: colors.text }]}>
@@ -146,22 +189,39 @@ export default function SettlementScreen({ navigation, route }) {
               </View>
 
               {balance > 0.01 && (
-                <View style={[styles.statusBadge, { backgroundColor: colors.success + "20" }]}>
+                <View
+                  style={[
+                    styles.statusBadge,
+                    { backgroundColor: colors.success + "20" },
+                  ]}
+                >
                   <Text style={[styles.statusText, { color: colors.success }]}>
                     Should Receive ₹{balance.toFixed(2)}
                   </Text>
                 </View>
               )}
               {balance < -0.01 && (
-                <View style={[styles.statusBadge, { backgroundColor: colors.error + "20" }]}>
+                <View
+                  style={[
+                    styles.statusBadge,
+                    { backgroundColor: colors.error + "20" },
+                  ]}
+                >
                   <Text style={[styles.statusText, { color: colors.error }]}>
                     Owes ₹{Math.abs(balance).toFixed(2)}
                   </Text>
                 </View>
               )}
               {Math.abs(balance) <= 0.01 && (
-                <View style={[styles.statusBadge, { backgroundColor: colors.borderLight }]}>
-                  <Text style={[styles.statusText, { color: colors.textSecondary }]}>
+                <View
+                  style={[
+                    styles.statusBadge,
+                    { backgroundColor: colors.borderLight },
+                  ]}
+                >
+                  <Text
+                    style={[styles.statusText, { color: colors.textSecondary }]}
+                  >
                     All Settled
                   </Text>
                 </View>
@@ -177,7 +237,9 @@ export default function SettlementScreen({ navigation, route }) {
           <Text style={[styles.sectionTitle, { color: colors.text }]}>
             Suggested Payments
           </Text>
-          <Text style={[styles.sectionSubtitle, { color: colors.textSecondary }]}>
+          <Text
+            style={[styles.sectionSubtitle, { color: colors.textSecondary }]}
+          >
             Minimal transfers to settle all balances
           </Text>
 
@@ -189,31 +251,58 @@ export default function SettlementScreen({ navigation, route }) {
                 { backgroundColor: colors.card, borderColor: colors.border },
               ]}
             >
-              <View style={styles.settlementRow}>
-                <Text style={[styles.fromText, { color: colors.text }]}>
-                  {getMemberName(settlement.from)}
+              <View style={styles.settlementContent}>
+                <View style={styles.settlementRow}>
+                  <Text style={[styles.fromText, { color: colors.text }]}>
+                    {getMemberName(settlement.from)}
+                  </Text>
+                  <Text style={[styles.arrow, { color: colors.textTertiary }]}>
+                    →
+                  </Text>
+                  <Text style={[styles.toText, { color: colors.text }]}>
+                    {getMemberName(settlement.to)}
+                  </Text>
+                </View>
+                <Text style={[styles.amountText, { color: colors.primary }]}>
+                  ₹{settlement.amount.toFixed(2)}
                 </Text>
-                <Text style={[styles.arrow, { color: colors.textTertiary }]}>→</Text>
-                <Text style={[styles.toText, { color: colors.text }]}>
-                  {getMemberName(settlement.to)}
-                </Text>
+                <TouchableOpacity
+                  style={[
+                    styles.markPaidButton,
+                    { backgroundColor: colors.success },
+                  ]}
+                  onPress={() => handleMarkPaid(settlement)}
+                >
+                  <Text style={styles.markPaidText}>✓ Mark as Paid</Text>
+                </TouchableOpacity>
               </View>
-              <Text style={[styles.amountText, { color: colors.primary }]}>
-                ₹{settlement.amount.toFixed(2)}
-              </Text>
             </View>
           ))}
 
-          <View style={[styles.infoBox, { backgroundColor: colors.info + "20", borderColor: colors.info }]}>
+          <View
+            style={[
+              styles.infoBox,
+              { backgroundColor: colors.info + "20", borderColor: colors.info },
+            ]}
+          >
             <Text style={[styles.infoText, { color: colors.info }]}>
-              💡 Only {settlements.length} payment{settlements.length > 1 ? "s" : ""} needed to settle everything!
+              💡 Only {settlements.length} payment
+              {settlements.length > 1 ? "s" : ""} needed to settle everything!
             </Text>
           </View>
         </View>
       )}
 
       {settlements.length === 0 && expenses.length > 0 && (
-        <View style={[styles.infoBox, { backgroundColor: colors.success + "20", borderColor: colors.success }]}>
+        <View
+          style={[
+            styles.infoBox,
+            {
+              backgroundColor: colors.success + "20",
+              borderColor: colors.success,
+            },
+          ]}
+        >
           <Text style={[styles.infoText, { color: colors.success }]}>
             ✓ All balances are settled!
           </Text>
@@ -228,7 +317,6 @@ export default function SettlementScreen({ navigation, route }) {
         </View>
       )}
 
-      {/* Settle Trip Button */}
       {!isSettled && expenses.length > 0 && (
         <TouchableOpacity
           style={[styles.settleButton, { backgroundColor: colors.primary }]}
@@ -241,11 +329,20 @@ export default function SettlementScreen({ navigation, route }) {
       )}
 
       {isSettled && (
-        <View style={[styles.settledInfo, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <Text style={[styles.settledInfoText, { color: colors.textSecondary }]}>
+        <View
+          style={[
+            styles.settledInfo,
+            { backgroundColor: colors.card, borderColor: colors.border },
+          ]}
+        >
+          <Text
+            style={[styles.settledInfoText, { color: colors.textSecondary }]}
+          >
             This trip has been settled and archived.
           </Text>
-          <Text style={[styles.settledInfoText, { color: colors.textSecondary }]}>
+          <Text
+            style={[styles.settledInfoText, { color: colors.textSecondary }]}
+          >
             Settled on: {new Date(group.settledAt).toLocaleDateString()}
           </Text>
         </View>
@@ -344,11 +441,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 2,
   },
+  settlementContent: {
+    gap: 12,
+  },
   settlementRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 8,
   },
   fromText: {
     fontSize: 16,
@@ -369,6 +468,21 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "800",
     textAlign: "center",
+  },
+  markPaidButton: {
+    padding: 14,
+    borderRadius: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  markPaidText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "700",
   },
   infoBox: {
     padding: 16,
