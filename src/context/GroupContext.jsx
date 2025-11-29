@@ -1,4 +1,7 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { calculateBalances, calculateSettlements } from "../utils/settlementCalculations";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "./AuthContext";
 
 const GroupContext = createContext();
 
@@ -11,7 +14,49 @@ export const useGroups = () => {
 };
 
 export const GroupProvider = ({ children }) => {
+  const { user } = useAuth();
   const [groups, setGroups] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load groups when user changes
+  useEffect(() => {
+    if (user) {
+      loadGroups(user.id);
+    } else {
+      setGroups([]);
+      setIsLoaded(false);
+    }
+  }, [user]);
+
+  // Save groups whenever they change, but only if data has been loaded
+  useEffect(() => {
+    if (user && isLoaded) {
+      saveGroups(user.id, groups);
+    }
+  }, [groups, user, isLoaded]);
+
+  const loadGroups = async (userId) => {
+    try {
+      const storedGroups = await AsyncStorage.getItem(`@splitbuddy_groups_${userId}`);
+      if (storedGroups) {
+        setGroups(JSON.parse(storedGroups));
+      } else {
+        setGroups([]);
+      }
+    } catch (error) {
+      console.error("Failed to load groups", error);
+    } finally {
+      setIsLoaded(true);
+    }
+  };
+
+  const saveGroups = async (userId, groupsToSave) => {
+    try {
+      await AsyncStorage.setItem(`@splitbuddy_groups_${userId}`, JSON.stringify(groupsToSave));
+    } catch (error) {
+      console.error("Failed to save groups", error);
+    }
+  };
 
   const addGroup = (group) => {
     const newGroup = {
@@ -57,6 +102,7 @@ export const GroupProvider = ({ children }) => {
             createdAt: new Date().toISOString(),
           };
 
+<<<<<<< HEAD
           const activityEntry = {
             id: Date.now().toString() + "_activity",
             type: "expense_added",
@@ -64,12 +110,23 @@ export const GroupProvider = ({ children }) => {
             timestamp: new Date().toISOString(),
             expenseId: newExpense.id,
           };
+=======
+          const updatedExpenses = [newExpense, ...group.expenses];
+          const balances = calculateBalances(updatedExpenses, group.members);
+          const settlements = calculateSettlements(balances, group.members);
+          const isSettled = settlements.length === 0 && updatedExpenses.length > 0;
+>>>>>>> feature/luca-design-overhaul
 
           return {
             ...group,
-            expenses: [newExpense, ...group.expenses],
+            expenses: updatedExpenses,
             totalExpenses: group.totalExpenses + parseFloat(expense.amount),
+<<<<<<< HEAD
             activityLog: [activityEntry, ...(group.activityLog || [])],
+=======
+            isSettled: isSettled,
+            settledAt: isSettled ? new Date().toISOString() : null,
+>>>>>>> feature/luca-design-overhaul
           };
         }
         return group;
@@ -87,6 +144,7 @@ export const GroupProvider = ({ children }) => {
             ? parseFloat(updates.amount)
             : oldAmount;
 
+<<<<<<< HEAD
           const activityEntry = {
             id: Date.now().toString() + "_activity",
             type: "expense_updated",
@@ -108,6 +166,28 @@ export const GroupProvider = ({ children }) => {
             ),
             totalExpenses: group.totalExpenses - oldAmount + newAmount,
             activityLog: [activityEntry, ...(group.activityLog || [])],
+=======
+          const updatedExpenses = group.expenses.map((expense) =>
+            expense.id === expenseId
+              ? {
+                ...expense,
+                ...updates,
+                updatedAt: new Date().toISOString(),
+              }
+              : expense
+          );
+
+          const balances = calculateBalances(updatedExpenses, group.members);
+          const settlements = calculateSettlements(balances, group.members);
+          const isSettled = settlements.length === 0 && updatedExpenses.length > 0;
+
+          return {
+            ...group,
+            expenses: updatedExpenses,
+            totalExpenses: group.totalExpenses - oldAmount + newAmount,
+            isSettled: isSettled,
+            settledAt: isSettled ? new Date().toISOString() : null,
+>>>>>>> feature/luca-design-overhaul
           };
         }
         return group;
@@ -131,11 +211,26 @@ export const GroupProvider = ({ children }) => {
             expenseId: expenseId,
           };
 
+          const updatedExpenses = group.expenses.filter(
+            (expense) => expense.id !== expenseId
+          );
+
+          const balances = calculateBalances(updatedExpenses, group.members);
+          const settlements = calculateSettlements(balances, group.members);
+          const isSettled = settlements.length === 0 && updatedExpenses.length > 0;
+
           return {
             ...group,
+<<<<<<< HEAD
             expenses: group.expenses.filter((e) => e.id !== expenseId),
             totalExpenses: group.totalExpenses - parseFloat(expenseToDelete.amount),
             activityLog: [activityEntry, ...(group.activityLog || [])],
+=======
+            expenses: updatedExpenses,
+            totalExpenses: group.totalExpenses - amountToSubtract,
+            isSettled: isSettled,
+            settledAt: isSettled ? new Date().toISOString() : null,
+>>>>>>> feature/luca-design-overhaul
           };
         }
         return group;

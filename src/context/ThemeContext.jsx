@@ -12,6 +12,7 @@ export const useTheme = () => {
   return context;
 };
 
+<<<<<<< HEAD
 // Color schemes
 const lightTheme = {
   // Background colors
@@ -104,6 +105,9 @@ const darkTheme = {
   overlay: "rgba(0, 0, 0, 0.7)",
   divider: "#334155",
 };
+=======
+import { lightTheme, darkTheme } from "../styles/theme";
+>>>>>>> feature/luca-design-overhaul
 
 const THEME_STORAGE_KEY = "@splitbuddy_theme";
 

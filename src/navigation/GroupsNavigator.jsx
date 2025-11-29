@@ -1,8 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View } from "react-native";
 import { useTheme } from "../context/ThemeContext";
+<<<<<<< HEAD
 import ThemeToggleButton from "../components/ThemeToggleButton";
 import LanguageToggleButton from "../components/LanguageToggleButton";
+=======
+>>>>>>> feature/luca-design-overhaul
 
 import GroupsScreen from "../screens/GroupsScreen";
 import CreateGroupScreen from "../screens/CreateGroupScreen";
@@ -12,12 +15,15 @@ import EditExpenseScreen from "../screens/EditExpenseScreen";
 import SettlementScreen from "../screens/SettlementScreen";
 import ActivityLogScreen from "../screens/ActivityLogScreen";
 
+import LucaHeader from "../components/ui/LucaHeader";
+
 const Stack = createNativeStackNavigator();
 
 export default function GroupsNavigator() {
   const { colors } = useTheme();
 
   const screenOptions = {
+<<<<<<< HEAD
     headerStyle: {
       backgroundColor: colors.surface,
     },
@@ -31,6 +37,9 @@ export default function GroupsNavigator() {
         <ThemeToggleButton />
       </View>
     ),
+=======
+    header: (props) => <LucaHeader {...props} />,
+>>>>>>> feature/luca-design-overhaul
   };
 
   return (

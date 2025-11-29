@@ -3,319 +3,273 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
-  Alert,
+  Pressable,
+  StatusBar,
 } from "react-native";
 import { useGroups } from "../context/GroupContext";
-import { useTheme } from "../context/ThemeContext";
-import { useLanguage } from "../context/LanguageContext";
+import { theme } from "../styles/theme";
+import { CrumpledCard } from "../components/ui/CrumpledCard";
+import { PulseIcon } from "../components/ui/PulseIcon";
+import { useAuth } from "../context/AuthContext";
+import { Plus, Users, Receipt, ArrowRight, SignOut } from "phosphor-react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { TouchableOpacity } from "react-native";
 
 export default function HomeScreen({ navigation }) {
   const { groups } = useGroups();
-  const { colors } = useTheme();
-  const { t } = useLanguage();
+  const { logout } = useAuth();
+  const insets = useSafeAreaInsets();
 
-  const activeGroups = groups.filter((g) => g.totalExpenses > 0).slice(0, 3);
-  const totalBalance = groups.reduce((sum, g) => sum + g.totalExpenses, 0);
+  const activeGroups = groups.filter((g) => !g.isSettled).slice(0, 3);
+  const totalBalance = groups.reduce(
+    (sum, g) => sum + (g.isSettled ? 0 : g.totalExpenses),
+    0
+  );
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-    >
-      <View
-        style={[
-          styles.header,
-          { backgroundColor: colors.surface, borderBottomColor: colors.border },
-        ]}
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <StatusBar style="dark" />
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>{t("home.dashboard")}</Text>
-        <Text style={styles.subtitle}>{t("home.welcomeBack")}</Text>
-      </View>
-
-      <View style={styles.statsContainer}>
-        <View style={[styles.statCard, { backgroundColor: colors.card }]}>
-          <Text style={[styles.statValue, { color: colors.primary }]}>
-            {groups.length}
-          </Text>
-          <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
-            {t("home.totalGroups")}
-          </Text>
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.title}>Dashboard</Text>
+            <Text style={styles.subtitle}>Welcome to the chaos!</Text>
+          </View>
+          <TouchableOpacity onPress={logout} style={styles.logoutButton}>
+            <SignOut size={24} color={theme.colors.burntInk} />
+          </TouchableOpacity>
         </View>
-        <View style={[styles.statCard, { backgroundColor: colors.card }]}>
-          <Text style={[styles.statValue, { color: colors.primary }]}>
-            ₹{totalBalance.toFixed(2)}
-          </Text>
-          <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
-            {t("home.totalExpenses")}
-          </Text>
-        </View>
-      </View>
 
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            {t("home.recentActivity")}
-          </Text>
-          {groups.length > 0 && (
-            <TouchableOpacity onPress={() => navigation.navigate("GroupsTab")}>
-              <Text style={[styles.seeAllText, { color: colors.primary }]}>
-                {t("home.seeAll")}
+        <View style={styles.statsContainer}>
+          <CrumpledCard style={styles.statCard}>
+            <Text style={styles.statValue}>{groups.length}</Text>
+            <Text style={styles.statLabel}>Active Trips</Text>
+          </CrumpledCard>
+          <CrumpledCard style={styles.statCard}>
+            <Text style={[styles.statValue, { color: theme.colors.aperitivoSpritz }]}>
+              ${totalBalance.toFixed(0)}
+            </Text>
+            <Text style={styles.statLabel}>Total Chaos</Text>
+          </CrumpledCard>
+        </View>
+
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Recent Trips</Text>
+            {groups.length > 0 && (
+              <Pressable onPress={() => navigation.navigate("GroupsTab")}>
+                <Text style={styles.seeAllText}>See All</Text>
+              </Pressable>
+            )}
+          </View>
+
+          {activeGroups.length > 0 ? (
+            activeGroups.map((group) => (
+              <Pressable
+                key={group.id}
+                onPress={() =>
+                  navigation.navigate("GroupsTab", {
+                    screen: "GroupDetails",
+                    params: { groupId: group.id },
+                  })
+                }
+              >
+                <CrumpledCard style={styles.activityCard}>
+                  <View style={styles.activityInfo}>
+                    <Text style={styles.activityName}>{group.name}</Text>
+                    <View style={styles.memberRow}>
+                      <Users size={16} color={theme.colors.warmAsh} />
+                      <Text style={styles.activityMembers}>
+                        {group.members?.length || 0} friends
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={styles.amountContainer}>
+                    <Text style={styles.activityAmount}>
+                      ${group.totalExpenses.toFixed(0)}
+                    </Text>
+                    <ArrowRight size={20} color={theme.colors.burntInk} />
+                  </View>
+                </CrumpledCard>
+              </Pressable>
+            ))
+          ) : (
+            <CrumpledCard style={styles.emptyActivity}>
+              <Text style={styles.emptyIcon}>🕸️</Text>
+              <Text style={styles.emptyText}>No expenses? Living like a hermit?</Text>
+              <Text style={styles.emptySubtext}>
+                Add some chaos and split it!
               </Text>
-            </TouchableOpacity>
+            </CrumpledCard>
           )}
         </View>
+      </ScrollView>
 
-        {activeGroups.length > 0 ? (
-          activeGroups.map((group) => (
-            <TouchableOpacity
-              key={group.id}
-              style={[styles.activityCard, { backgroundColor: colors.card }]}
-              onPress={() =>
-                navigation.navigate("GroupsTab", {
-                  screen: "GroupDetails",
-                  params: { groupId: group.id },
-                })
-              }
-            >
-              <View style={styles.activityInfo}>
-                <Text style={[styles.activityName, { color: colors.text }]}>
-                  {group.name}
-                </Text>
-                <Text
-                  style={[
-                    styles.activityMembers,
-                    { color: colors.textSecondary },
-                  ]}
-                >
-                  {group.members?.length || 0} {t("common.members").toLowerCase()}
-                </Text>
-              </View>
-              <Text style={[styles.activityAmount, { color: colors.primary }]}>
-                ₹{group.totalExpenses.toFixed(2)}
-              </Text>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <View
-            style={[styles.emptyActivity, { backgroundColor: colors.card }]}
-          >
-            <Text style={styles.emptyIcon}>📊</Text>
-            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-              {t("home.noActivity")}
-            </Text>
-            <Text style={[styles.emptySubtext, { color: colors.textTertiary }]}>
-              {t("home.noActivitySubtext")}
-            </Text>
-          </View>
-        )}
-      </View>
-
-      <View style={styles.quickActions}>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>
-          {t("home.quickActions")}
-        </Text>
-        <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: colors.card }]}
+      <View style={styles.fabContainer}>
+        <Pressable
           onPress={() =>
             navigation.navigate("GroupsTab", {
               screen: "CreateGroup",
             })
           }
         >
-          <Text style={styles.actionIcon}>➕</Text>
-          <Text style={[styles.actionText, { color: colors.text }]}>
-            {t("home.createNewGroup")}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: colors.card }]}
-          onPress={() => navigation.navigate("GroupsTab")}
-        >
-          <Text style={styles.actionIcon}>👥</Text>
-          <Text style={[styles.actionText, { color: colors.text }]}>
-            {t("home.viewAllGroups")}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.actionButton, { marginTop: 10 }]}
-          onPress={() => {
-            Alert.alert(
-              t("home.logOut"),
-              t("home.logOut") + "?",
-              [
-                { text: t("common.cancel"), style: "cancel" },
-                {
-                  text: t("home.logOut"),
-                  style: "destructive",
-                  onPress: () => {
-                    // Reset the root navigator state to show Login screen
-                    // We use getParent() to access the stack navigator since we are in a tab navigator
-                    navigation.getParent()?.reset({
-                      index: 0,
-                      routes: [{ name: "Login" }],
-                    });
-                  },
-                },
-              ]
-            );
-          }}
-        >
-          <Text style={styles.actionIcon}>🚪</Text>
-          <Text style={[styles.actionText, { color: "#EF4444" }]}>
-            {t("home.logOut")}
-          </Text>
-        </TouchableOpacity>
+          <PulseIcon style={styles.fab}>
+            <Plus size={32} color={theme.colors.burntInk} weight="bold" />
+          </PulseIcon>
+        </Pressable>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: theme.colors.oldReceipt,
+  },
+  scrollContent: {
+    padding: theme.spacing.homePadding,
+    paddingBottom: 100, // Space for FAB
   },
   header: {
-    backgroundColor: "#fff",
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
+    marginBottom: 24,
+    marginTop: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  logoutButton: {
+    padding: 8,
+    backgroundColor: theme.colors.white,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: theme.colors.burntInk,
   },
   title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#333",
+    ...theme.typography.display,
+    color: theme.colors.burntInk,
   },
   subtitle: {
-    fontSize: 16,
-    color: "#666",
+    ...theme.typography.body,
+    color: theme.colors.warmAsh,
     marginTop: 4,
   },
   statsContainer: {
     flexDirection: "row",
-    padding: 16,
     gap: 12,
+    marginBottom: 32,
   },
   statCard: {
     flex: 1,
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 20,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    justifyContent: "center",
+    paddingVertical: 24,
+    backgroundColor: theme.colors.white,
   },
   statValue: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#007AFF",
+    ...theme.typography.title1,
+    color: theme.colors.burntInk,
   },
   statLabel: {
-    fontSize: 14,
-    color: "#666",
+    ...theme.typography.caption,
+    color: theme.colors.warmAsh,
     marginTop: 4,
+    textTransform: "uppercase",
+    letterSpacing: 1,
   },
   section: {
-    padding: 16,
+    marginBottom: 24,
   },
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 12,
+    marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
+    ...theme.typography.title2,
+    color: theme.colors.burntInk,
   },
   seeAllText: {
-    fontSize: 14,
-    color: "#007AFF",
-    fontWeight: "600",
+    ...theme.typography.body,
+    color: theme.colors.aperitivoSpritz,
+    fontFamily: "Syne_700Bold",
   },
   activityCard: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 10,
+    marginBottom: 12,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
-    elevation: 2,
+    backgroundColor: theme.colors.white,
   },
   activityInfo: {
     flex: 1,
   },
   activityName: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
+    ...theme.typography.title2,
+    fontSize: 20,
+    color: theme.colors.burntInk,
+    marginBottom: 4,
+  },
+  memberRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
   },
   activityMembers: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 4,
+    ...theme.typography.caption,
+    color: theme.colors.warmAsh,
+  },
+  amountContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   activityAmount: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#007AFF",
+    ...theme.typography.title2,
+    color: theme.colors.aperitivoSpritz,
   },
   emptyActivity: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 40,
     alignItems: "center",
+    padding: 32,
+    backgroundColor: theme.colors.white,
   },
   emptyIcon: {
     fontSize: 48,
-    marginBottom: 12,
+    marginBottom: 16,
   },
   emptyText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#666",
+    ...theme.typography.title2,
+    color: theme.colors.burntInk,
+    textAlign: "center",
+    marginBottom: 8,
   },
   emptySubtext: {
-    fontSize: 14,
-    color: "#999",
-    marginTop: 8,
+    ...theme.typography.body,
+    color: theme.colors.warmAsh,
     textAlign: "center",
   },
-  quickActions: {
-    padding: 16,
-    paddingBottom: 32,
+  fabContainer: {
+    position: "absolute",
+    bottom: 32,
+    right: 24,
   },
-  actionButton: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: "row",
+  fab: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: theme.colors.aperitivoSpritz,
+    justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  actionIcon: {
-    fontSize: 24,
-    marginRight: 12,
-  },
-  actionText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#333",
+    shadowColor: theme.colors.aperitivoSpritz,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 8,
+    borderWidth: 2,
+    borderColor: theme.colors.burntInk,
   },
 });
