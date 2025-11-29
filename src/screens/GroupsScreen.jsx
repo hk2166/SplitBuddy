@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Pressable,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
 import { useGroups } from "../context/GroupContext";
 import { theme } from "../styles/theme";
 import { CrumpledCard } from "../components/ui/CrumpledCard";
@@ -33,9 +27,7 @@ export default function GroupsScreen({ navigation }) {
         <View style={styles.tripDetails}>
           <View style={styles.memberCount}>
             <Users size={16} color={theme.colors.warmAsh} weight="fill" />
-            <Text style={styles.tripMembers}>
-              {item.members?.length || 0}
-            </Text>
+            <Text style={styles.tripMembers}>{item.members?.length || 0}</Text>
           </View>
           {item.description && (
             <Text style={styles.tripDescription} numberOfLines={1}>
@@ -45,7 +37,11 @@ export default function GroupsScreen({ navigation }) {
         </View>
         <View style={styles.cardFooter}>
           <Text style={styles.viewDetailsText}>View Details</Text>
-          <ArrowRight size={16} color={theme.colors.aperitivoSpritz} weight="bold" />
+          <ArrowRight
+            size={16}
+            color={theme.colors.aperitivoSpritz}
+            weight="bold"
+          />
         </View>
       </CrumpledCard>
     </Pressable>
@@ -64,7 +60,9 @@ export default function GroupsScreen({ navigation }) {
           <Text style={styles.statLabel}>Active</Text>
         </CrumpledCard>
         <CrumpledCard style={styles.statCard}>
-          <Text style={[styles.statValue, { color: theme.colors.aperitivoSpritz }]}>
+          <Text
+            style={[styles.statValue, { color: theme.colors.aperitivoSpritz }]}
+          >
             ${totalDebt.toFixed(0)}
           </Text>
           <Text style={styles.statLabel}>Total Debt</Text>
@@ -76,10 +74,8 @@ export default function GroupsScreen({ navigation }) {
   const renderEmptyState = () => (
     <CrumpledCard style={styles.emptyContainer}>
       <Text style={styles.emptyIcon}>🏖️</Text>
-      <Text style={[styles.emptyTitle, { color: colors.text }]}>
-        No Trips Yet
-      </Text>
-      <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
+      <Text style={styles.emptyTitle}>No Trips Yet</Text>
+      <Text style={styles.emptySubtitle}>
         Create your first trip to start splitting expenses with friends
       </Text>
     </CrumpledCard>
