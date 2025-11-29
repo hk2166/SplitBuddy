@@ -10,11 +10,14 @@ import { useGroups } from "../context/GroupContext";
 import { theme } from "../styles/theme";
 import { CrumpledCard } from "../components/ui/CrumpledCard";
 import { PulseIcon } from "../components/ui/PulseIcon";
-import { Plus, Users, Receipt, ArrowRight } from "phosphor-react-native";
+import { useAuth } from "../context/AuthContext";
+import { Plus, Users, Receipt, ArrowRight, SignOut } from "phosphor-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { TouchableOpacity } from "react-native";
 
 export default function HomeScreen({ navigation }) {
   const { groups } = useGroups();
+  const { logout } = useAuth();
   const insets = useSafeAreaInsets();
 
   const activeGroups = groups.filter((g) => !g.isSettled).slice(0, 3);
@@ -31,8 +34,13 @@ export default function HomeScreen({ navigation }) {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={styles.title}>Dashboard</Text>
-          <Text style={styles.subtitle}>Welcome to the chaos!</Text>
+          <View>
+            <Text style={styles.title}>Dashboard</Text>
+            <Text style={styles.subtitle}>Welcome to the chaos!</Text>
+          </View>
+          <TouchableOpacity onPress={logout} style={styles.logoutButton}>
+            <SignOut size={24} color={theme.colors.burntInk} />
+          </TouchableOpacity>
         </View>
 
         <View style={styles.statsContainer}>
@@ -129,6 +137,16 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: 24,
     marginTop: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  logoutButton: {
+    padding: 8,
+    backgroundColor: theme.colors.white,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: theme.colors.burntInk,
   },
   title: {
     ...theme.typography.display,

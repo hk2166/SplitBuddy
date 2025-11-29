@@ -16,7 +16,11 @@ import { CrumpledCard } from "../components/ui/CrumpledCard";
 import { Eye, EyeSlash } from "phosphor-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useAuth } from "../context/AuthContext";
+import { Alert } from "react-native";
+
 export default function RegisterScreen({ navigation }) {
+    const { register } = useAuth();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -25,13 +29,19 @@ export default function RegisterScreen({ navigation }) {
     const insets = useSafeAreaInsets();
 
     const handleRegister = async () => {
+        if (!name || !email || !password) {
+            Alert.alert("Error", "Please fill in all fields");
+            return;
+        }
+
         setIsLoading(true);
-        // Simulate register API call
-        setTimeout(() => {
-            setIsLoading(false);
-            // Navigate to main app
-            navigation.replace("Main");
-        }, 1000);
+        const result = await register(name, email, password);
+        setIsLoading(false);
+
+        if (!result.success) {
+            Alert.alert("Registration Failed", result.error);
+        }
+        // No need to navigate manually, RootNavigator handles it
     };
 
     return (

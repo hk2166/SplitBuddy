@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { calculateBalances, calculateSettlements } from "../utils/settlementCalculations";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "./AuthContext";
 
 const GroupContext = createContext();
 
@@ -12,7 +14,49 @@ export const useGroups = () => {
 };
 
 export const GroupProvider = ({ children }) => {
+  const { user } = useAuth();
   const [groups, setGroups] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load groups when user changes
+  useEffect(() => {
+    if (user) {
+      loadGroups(user.id);
+    } else {
+      setGroups([]);
+      setIsLoaded(false);
+    }
+  }, [user]);
+
+  // Save groups whenever they change, but only if data has been loaded
+  useEffect(() => {
+    if (user && isLoaded) {
+      saveGroups(user.id, groups);
+    }
+  }, [groups, user, isLoaded]);
+
+  const loadGroups = async (userId) => {
+    try {
+      const storedGroups = await AsyncStorage.getItem(`@splitbuddy_groups_${userId}`);
+      if (storedGroups) {
+        setGroups(JSON.parse(storedGroups));
+      } else {
+        setGroups([]);
+      }
+    } catch (error) {
+      console.error("Failed to load groups", error);
+    } finally {
+      setIsLoaded(true);
+    }
+  };
+
+  const saveGroups = async (userId, groupsToSave) => {
+    try {
+      await AsyncStorage.setItem(`@splitbuddy_groups_${userId}`, JSON.stringify(groupsToSave));
+    } catch (error) {
+      console.error("Failed to save groups", error);
+    }
+  };
 
   const addGroup = (group) => {
     const newGroup = {

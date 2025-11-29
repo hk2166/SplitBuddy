@@ -16,7 +16,11 @@ import { CrumpledCard } from "../components/ui/CrumpledCard";
 import { Eye, EyeSlash } from "phosphor-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useAuth } from "../context/AuthContext";
+import { Alert } from "react-native";
+
 export default function LoginScreen({ navigation }) {
+    const { login, loginAsGuest } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -24,18 +28,29 @@ export default function LoginScreen({ navigation }) {
     const insets = useSafeAreaInsets();
 
     const handleLogin = async () => {
+        if (!email || !password) {
+            Alert.alert("Error", "Please fill in all fields");
+            return;
+        }
+
         setIsLoading(true);
-        // Simulate login API call
-        setTimeout(() => {
-            setIsLoading(false);
-            // Navigate to main app
-            navigation.replace("Main");
-        }, 1000);
+        const result = await login(email, password);
+        setIsLoading(false);
+
+        if (!result.success) {
+            Alert.alert("Login Failed", result.error);
+        }
+        // No need to navigate manually, RootNavigator handles it based on user state
     };
 
-    const handleContinueWithoutLogin = () => {
-        // Navigate directly to main app
-        navigation.replace("Main");
+    const handleContinueWithoutLogin = async () => {
+        setIsLoading(true);
+        const result = await loginAsGuest();
+        setIsLoading(false);
+
+        if (!result.success) {
+            Alert.alert("Error", result.error);
+        }
     };
 
     return (

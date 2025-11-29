@@ -3,6 +3,7 @@ import { StyleSheet, View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { ThemeProvider } from "./src/context/ThemeContext";
 import { GroupProvider } from "./src/context/GroupContext";
+import { AuthProvider } from "./src/context/AuthContext";
 import RootNavigator from "./src/navigation/RootNavigator";
 import {
   useFonts,
@@ -31,12 +32,14 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <GroupProvider>
-        <NavigationContainer>
-          <RootNavigator />
-          <StatusBar style="auto" />
-        </NavigationContainer>
-      </GroupProvider>
+      <AuthProvider>
+        <GroupProvider>
+          <NavigationContainer>
+            <RootNavigator />
+            <StatusBar style="auto" />
+          </NavigationContainer>
+        </GroupProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
