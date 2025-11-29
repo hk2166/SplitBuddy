@@ -131,7 +131,7 @@ export default function SettlementScreen({ navigation, route }) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>Settlements</Text>
+        <Text style={styles.title}>Settlement Plan</Text>
         <Text style={styles.subtitle}>for {group.name}</Text>
 
         {isSettled && (
@@ -160,27 +160,27 @@ export default function SettlementScreen({ navigation, route }) {
                       styles.netBalance,
                       {
                         color: isPositive
-                          ? theme.colors.electricAmaro
+                          ? theme.colors.oliveGreen
                           : isNegative
-                            ? theme.colors.aperitivoSpritz
+                            ? theme.colors.tomatoRed
                             : theme.colors.warmAsh,
                       },
                     ]}
                   >
                     {isPositive
-                      ? `+₹${balance.toFixed(0)}`
+                      ? `+$${balance.toFixed(0)}`
                       : isNegative
-                        ? `-₹${Math.abs(balance).toFixed(0)}`
+                        ? `-$${Math.abs(balance).toFixed(0)}`
                         : "Even"}
                   </Text>
                 </View>
 
                 <View style={styles.memberDetails}>
                   <Text style={styles.detailText}>
-                    Paid: ₹{summary.totalPaid.toFixed(0)}
+                    Paid: ${summary.totalPaid.toFixed(0)}
                   </Text>
                   <Text style={styles.detailText}>
-                    Total Owed: ₹{summary.totalOwed.toFixed(0)}
+                    Total Owed: ${summary.totalOwed.toFixed(0)}
                   </Text>
                 </View>
 
@@ -189,9 +189,9 @@ export default function SettlementScreen({ navigation, route }) {
                     styles.balanceBar,
                     {
                       backgroundColor: isPositive
-                        ? theme.colors.electricAmaro + "20" // 20% opacity
+                        ? theme.colors.oliveGreen + "20" // 20% opacity
                         : isNegative
-                          ? theme.colors.aperitivoSpritz + "20"
+                          ? theme.colors.tomatoRed + "20"
                           : theme.colors.warmAsh + "20",
                     },
                   ]}
@@ -201,17 +201,17 @@ export default function SettlementScreen({ navigation, route }) {
                       styles.balanceBarText,
                       {
                         color: isPositive
-                          ? theme.colors.electricAmaro
+                          ? theme.colors.oliveGreen
                           : isNegative
-                            ? theme.colors.aperitivoSpritz
+                            ? theme.colors.tomatoRed
                             : theme.colors.warmAsh,
                       },
                     ]}
                   >
                     {isPositive
-                      ? `Should Receive ₹${balance.toFixed(2)}`
+                      ? `Should Receive $${balance.toFixed(2)}`
                       : isNegative
-                        ? `Owes ₹${Math.abs(balance).toFixed(2)}`
+                        ? `Owes $${Math.abs(balance).toFixed(2)}`
                         : "Settled"}
                   </Text>
                 </View>
@@ -232,7 +232,7 @@ export default function SettlementScreen({ navigation, route }) {
               <CrumpledCard key={index} style={styles.settlementCard}>
                 <View style={styles.cardHeader}>
                   <Text style={styles.amountText}>
-                    ₹{settlement.amount.toFixed(0)}
+                    ${settlement.amount.toFixed(0)}
                   </Text>
                 </View>
 
@@ -261,7 +261,7 @@ export default function SettlementScreen({ navigation, route }) {
         {allSettled && (
           <View style={styles.celebrationContainer}>
             <PulseIcon>
-              <Sparkle size={48} color={theme.colors.electricAmaro} weight="fill" />
+              <Sparkle size={48} color={theme.colors.oliveGreen} weight="fill" />
             </PulseIcon>
             <Text style={styles.celebrationText}>
               All even, you lucky bastards!
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.oldReceipt,
   },
   scrollContent: {
-    padding: theme.spacing.settlementPadding,
+    padding: 24,
     paddingBottom: 100,
   },
   title: {
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   settledBadge: {
-    backgroundColor: theme.colors.electricAmaro,
+    backgroundColor: theme.colors.oliveGreen,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
   amountText: {
     ...theme.typography.display,
     fontSize: 24,
-    color: theme.colors.aperitivoSpritz,
+    color: theme.colors.tomatoRed,
   },
   markPaidButton: {
     height: 48,
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
   },
   markPaidButtonText: {
     fontSize: 16,
-    color: theme.colors.electricAmaro,
+    color: theme.colors.oliveGreen,
   },
   balanceBar: {
     marginTop: 16,
@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
   celebrationText: {
     ...theme.typography.display,
     fontSize: 24,
-    color: theme.colors.electricAmaro,
+    color: theme.colors.oliveGreen,
     textAlign: "center",
     textShadowColor: theme.colors.burntInk,
     textShadowOffset: { width: 1, height: 1 },

@@ -37,11 +37,9 @@ export default function GroupsScreen({ navigation }) {
         </View>
         <View style={styles.cardFooter}>
           <Text style={styles.viewDetailsText}>View Details</Text>
-          <ArrowRight
-            size={16}
-            color={theme.colors.aperitivoSpritz}
-            weight="bold"
-          />
+
+          <ArrowRight size={16} color={theme.colors.tomatoRed} weight="bold" />
+
         </View>
       </CrumpledCard>
     </Pressable>
@@ -51,7 +49,7 @@ export default function GroupsScreen({ navigation }) {
     <View>
       <View style={styles.header}>
         <Text style={styles.title}>All Trips</Text>
-        <Text style={styles.subtitle}>Manage your chaos</Text>
+        <Text style={styles.subtitle}>Manage Your Shares</Text>
       </View>
 
       <View style={styles.statsContainer}>
@@ -60,9 +58,9 @@ export default function GroupsScreen({ navigation }) {
           <Text style={styles.statLabel}>Active</Text>
         </CrumpledCard>
         <CrumpledCard style={styles.statCard}>
-          <Text
-            style={[styles.statValue, { color: theme.colors.aperitivoSpritz }]}
-          >
+
+          <Text style={[styles.statValue, { color: theme.colors.tomatoRed }]}>
+
             ${totalDebt.toFixed(0)}
           </Text>
           <Text style={styles.statLabel}>Total Debt</Text>
@@ -73,10 +71,10 @@ export default function GroupsScreen({ navigation }) {
 
   const renderEmptyState = () => (
     <CrumpledCard style={styles.emptyContainer}>
-      <Text style={styles.emptyIcon}>🏖️</Text>
+      <Text style={styles.emptyIcon}>🍴</Text>
       <Text style={styles.emptyTitle}>No Trips Yet</Text>
       <Text style={styles.emptySubtitle}>
-        Create your first trip to start splitting expenses with friends
+        Create one and split the sauce!
       </Text>
     </CrumpledCard>
   );
@@ -167,7 +165,7 @@ const styles = StyleSheet.create({
   },
   tripAmount: {
     ...theme.typography.title2,
-    color: theme.colors.aperitivoSpritz,
+    color: theme.colors.tomatoRed,
     fontFamily: "Syne_700Bold",
   },
   tripDetails: {
@@ -202,7 +200,7 @@ const styles = StyleSheet.create({
   },
   viewDetailsText: {
     ...theme.typography.micro,
-    color: theme.colors.aperitivoSpritz,
+    color: theme.colors.tomatoRed,
     textTransform: "uppercase",
   },
   emptyContainer: {
@@ -233,10 +231,10 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: theme.colors.aperitivoSpritz,
+    backgroundColor: theme.colors.tomatoRed,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: theme.colors.aperitivoSpritz,
+    shadowColor: theme.colors.tomatoRed,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.4,
     shadowRadius: 12,

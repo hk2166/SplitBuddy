@@ -75,7 +75,7 @@ export default function ActivityLogScreen() {
           text: expense.isPayment
             ? `${payerName} paid ${receiverName}`
             : `${payerName} added '${expense.title}'`,
-          amount: `₹${parseFloat(expense.amount).toFixed(0)}`,
+          amount: `$${parseFloat(expense.amount).toFixed(0)}`,
           time: expense.createdAt,
           timestamp: new Date(expense.createdAt).getTime(),
         });
@@ -103,19 +103,19 @@ export default function ActivityLogScreen() {
   const getIcon = (type) => {
     switch (type) {
       case "add":
-        return <Receipt size={24} color="#2196F3" weight="fill" />; // Blue
+        return <Receipt size={24} color={theme.colors.tomatoRed} weight="fill" />;
       case "payment":
-        return <Receipt size={24} color="#4CAF50" weight="fill" />; // Green
+        return <Receipt size={24} color={theme.colors.oliveGreen} weight="fill" />;
       case "member":
-        return <PencilSimple size={24} color="#FF9800" weight="fill" />; // Orange (using Pencil for now as member icon)
+        return <PencilSimple size={24} color={theme.colors.parmesanGold} weight="fill" />;
       case "create":
-        return <PencilSimple size={24} color="#9C27B0" weight="fill" />; // Purple
+        return <PencilSimple size={24} color={theme.colors.burntInk} weight="fill" />;
       case "settle":
-        return <Trash size={24} color="#4CAF50" weight="fill" />; // Green check/trash
+        return <Trash size={24} color={theme.colors.oliveGreen} weight="fill" />;
       case "edit":
-        return <PencilSimple size={24} color="#2196F3" weight="fill" />; // Blue
+        return <PencilSimple size={24} color={theme.colors.tomatoRed} weight="fill" />;
       case "delete":
-        return <Trash size={24} color="#757575" weight="fill" />; // Gray
+        return <Trash size={24} color={theme.colors.warmAsh} weight="fill" />;
       default:
         return <Receipt size={24} color={theme.colors.burntInk} />;
     }
@@ -127,7 +127,7 @@ export default function ActivityLogScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>Recent Chaos</Text>
+        <Text style={styles.title}>The Receipts</Text>
         <Text style={styles.subtitle}>Who did what?</Text>
 
         <View style={styles.list}>
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   amountText: {
     ...theme.typography.title2,
     fontSize: 18,
-    color: theme.colors.burntInk,
+    color: theme.colors.tomatoRed,
     fontFamily: "Syne_700Bold",
   },
 });

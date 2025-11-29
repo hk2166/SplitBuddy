@@ -125,10 +125,10 @@ export default function RegisterScreen({ navigation }) {
 
                         <View style={styles.actions}>
                             <LucaButton
-                                title={isLoading ? "Joining..." : "Start the Party"}
+                                title={isLoading ? "Joining..." : "Join the Family"}
                                 onPress={handleRegister}
                                 disabled={isLoading}
-                                style={styles.registerButton}
+                                style={[styles.registerButton, { backgroundColor: theme.colors.oliveGreen, shadowColor: theme.colors.oliveGreen }]}
                             />
                         </View>
                     </View>
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     },
     linkText: {
         ...theme.typography.body,
-        color: theme.colors.aperitivoSpritz,
+        color: theme.colors.oliveGreen,
         fontFamily: "Syne_700Bold",
     },
 });

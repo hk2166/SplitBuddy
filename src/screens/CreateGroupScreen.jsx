@@ -109,7 +109,7 @@ export default function CreateGroupScreen({ navigation }) {
         </View>
 
         <View style={styles.formSection}>
-          <Text style={styles.label}>The Squad</Text>
+          <Text style={styles.label}>The Crew</Text>
           <CrumpledCard style={styles.addMemberCard}>
             <TextInput
               placeholder="Add a victim..."
@@ -121,7 +121,7 @@ export default function CreateGroupScreen({ navigation }) {
               placeholderTextColor={theme.colors.warmAsh}
             />
             <Pressable onPress={handleAddMember} style={styles.addIcon}>
-              <Plus size={24} color={theme.colors.aperitivoSpritz} weight="bold" />
+              <Plus size={24} color={theme.colors.tomatoRed} weight="bold" />
             </Pressable>
           </CrumpledCard>
 
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   },
   memberTagName: {
     ...theme.typography.body,
-    color: theme.colors.electricAmaro,
+    color: theme.colors.white,
     fontFamily: "Syne_700Bold",
     fontSize: 14,
   },

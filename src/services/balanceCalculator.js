@@ -50,5 +50,5 @@ export const getCreditors = (balances) => {
 };
 
 export const formatCurrency = (amount) => {
-  return `$${Math.abs(amount).toFixed(2)}`;
+  return `₹${Math.abs(amount).toFixed(2)}`;
 };

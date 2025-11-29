@@ -181,7 +181,7 @@ export default function GroupDetailsScreen({ navigation, route }) {
             <View style={styles.statDivider} />
             <View style={styles.statItem}>
               <Text style={styles.statLabel}>Left to Settle</Text>
-              <Text style={[styles.statValue, { color: theme.colors.aperitivoSpritz }]}>
+              <Text style={[styles.statValue, { color: theme.colors.tomatoRed }]}>
                 {formatCurrency(leftToSettle)}
               </Text>
             </View>
@@ -218,7 +218,7 @@ export default function GroupDetailsScreen({ navigation, route }) {
                           <Pencil size={16} color={theme.colors.warmAsh} />
                         </Pressable>
                         <Pressable onPress={() => handleDeleteMember(member)}>
-                          <Trash size={16} color={theme.colors.aperitivoSpritz} />
+                          <Trash size={16} color={theme.colors.tomatoRed} />
                         </Pressable>
                       </View>
                     </View>
@@ -228,9 +228,9 @@ export default function GroupDetailsScreen({ navigation, route }) {
                         styles.memberBalance,
                         {
                           color: isPositive
-                            ? theme.colors.electricAmaro
+                            ? theme.colors.oliveGreen
                             : isNegative
-                              ? theme.colors.aperitivoSpritz
+                              ? theme.colors.tomatoRed
                               : theme.colors.warmAsh,
                         },
                       ]}
@@ -253,7 +253,7 @@ export default function GroupDetailsScreen({ navigation, route }) {
         {/* Expenses Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Damage Report</Text>
+            <Text style={styles.sectionTitle}>Expense Report</Text>
             <Pressable
               onPress={() => navigation.navigate("AddExpense", { groupId })}
             >
@@ -306,7 +306,6 @@ export default function GroupDetailsScreen({ navigation, route }) {
             <LucaButton
               title="Settlements"
               onPress={() => navigation.navigate("Settlement", { groupId })}
-              style={{ marginBottom: 12 }}
             />
             <LucaButton
               title="Activity Log"
@@ -458,7 +457,7 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     ...theme.typography.body,
-    color: theme.colors.aperitivoSpritz,
+    color: theme.colors.tomatoRed,
     fontFamily: "Syne_700Bold",
   },
   grid: {
@@ -481,7 +480,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: theme.colors.electricAmaro,
+    backgroundColor: theme.colors.oliveGreen,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 2,
@@ -489,7 +488,7 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     ...theme.typography.title2,
-    color: theme.colors.burntInk,
+    color: theme.colors.white,
   },
   memberActions: {
     flexDirection: "row",
@@ -527,7 +526,7 @@ const styles = StyleSheet.create({
   },
   expenseAmount: {
     ...theme.typography.title2,
-    color: theme.colors.aperitivoSpritz,
+    color: theme.colors.tomatoRed,
   },
   emptyState: {
     padding: 24,
@@ -540,7 +539,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   actionButtons: {
-    gap: 12,
+    gap: 24,
+    marginTop: 16,
   },
   modalOverlay: {
     flex: 1,

@@ -36,7 +36,7 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.header}>
           <View>
             <Text style={styles.title}>Dashboard</Text>
-            <Text style={styles.subtitle}>Welcome to the chaos!</Text>
+            <Text style={styles.subtitle}>Welcome to the Feast!</Text>
           </View>
           <TouchableOpacity onPress={logout} style={styles.logoutButton}>
             <SignOut size={24} color={theme.colors.burntInk} />
@@ -49,10 +49,10 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.statLabel}>Active Trips</Text>
           </CrumpledCard>
           <CrumpledCard style={styles.statCard}>
-            <Text style={[styles.statValue, { color: theme.colors.aperitivoSpritz }]}>
+            <Text style={[styles.statValue, { color: theme.colors.tomatoRed }]}>
               ${totalBalance.toFixed(0)}
             </Text>
-            <Text style={styles.statLabel}>Total Chaos</Text>
+            <Text style={styles.statLabel}>Total Spent</Text>
           </CrumpledCard>
         </View>
 
@@ -98,10 +98,10 @@ export default function HomeScreen({ navigation }) {
             ))
           ) : (
             <CrumpledCard style={styles.emptyActivity}>
-              <Text style={styles.emptyIcon}>🕸️</Text>
-              <Text style={styles.emptyText}>No expenses? Living like a hermit?</Text>
+              <Text style={styles.emptyIcon}>🍝</Text>
+              <Text style={styles.emptyText}>No bills yet? Time for pasta night!</Text>
               <Text style={styles.emptySubtext}>
-                Add some chaos and split it!
+                Create a trip and split the sauce!
               </Text>
             </CrumpledCard>
           )}
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   seeAllText: {
     ...theme.typography.body,
-    color: theme.colors.aperitivoSpritz,
+    color: theme.colors.tomatoRed,
     fontFamily: "Syne_700Bold",
   },
   activityCard: {
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
   },
   activityAmount: {
     ...theme.typography.title2,
-    color: theme.colors.aperitivoSpritz,
+    color: theme.colors.tomatoRed,
   },
   emptyActivity: {
     alignItems: "center",
@@ -261,10 +261,10 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: theme.colors.aperitivoSpritz,
+    backgroundColor: theme.colors.tomatoRed,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: theme.colors.aperitivoSpritz,
+    shadowColor: theme.colors.tomatoRed,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.4,
     shadowRadius: 12,
