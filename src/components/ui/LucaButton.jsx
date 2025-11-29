@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     primary: {
-        backgroundColor: theme.colors.aperitivoSpritz,
-        shadowColor: theme.colors.aperitivoSpritz,
+        backgroundColor: theme.colors.tomatoRed,
+        shadowColor: theme.colors.tomatoRed,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     secondary: {
         backgroundColor: "transparent",
         borderWidth: 2,
-        borderColor: theme.colors.electricAmaro,
+        borderColor: theme.colors.oliveGreen,
     },
     disabled: {
         opacity: 0.6,
@@ -102,9 +102,9 @@ const styles = StyleSheet.create({
         fontFamily: "Syne_700Bold",
     },
     primaryText: {
-        color: theme.colors.burntInk,
+        color: theme.colors.white,
     },
     secondaryText: {
-        color: theme.colors.burntInk,
+        color: theme.colors.oliveGreen,
     },
 });

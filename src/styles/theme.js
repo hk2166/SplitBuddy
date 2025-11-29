@@ -49,30 +49,38 @@ export const lightTheme = {
         white: "#FFFFFF", // surface
         burntInk: "#1A1A1A", // text
         warmAsh: "#6B7280", // textSecondary
-        aperitivoSpritz: "#3B82F6", // primary (mapped to blue for now, or keep orange if original design requires)
-        electricAmaro: "#10B981", // success
-        sunnyTeal: "#3B82F6", // info
+        aperitivoSpritz: "#E63946", // Tomato Red
+        electricAmaro: "#606C38", // Olive Green
+        sunnyTeal: "#FFB703", // Gold
+        tomatoRed: "#E63946",
+        oliveGreen: "#606C38",
+        parmesanGold: "#FFB703",
     },
     typography: {
         display: {
             fontFamily: "Syne_800ExtraBold",
             fontSize: 32,
+            color: "#1C1917",
         },
         title1: {
             fontFamily: "Syne_700Bold",
             fontSize: 24,
+            color: "#1C1917",
         },
         title2: {
             fontFamily: "Syne_700Bold",
-            fontSize: 20,
+            fontSize: 18,
+            color: "#1C1917",
         },
         body: {
             fontFamily: "Syne_500Medium",
             fontSize: 16,
+            color: "#57534E",
         },
         caption: {
             fontFamily: "Syne_400Regular",
             fontSize: 14,
+            color: "#57534E",
         },
     },
     spacing: {
@@ -143,30 +151,38 @@ export const darkTheme = {
         white: "#1E293B", // surface
         burntInk: "#FFFFFF", // text
         warmAsh: "#94A3B8", // textSecondary
-        aperitivoSpritz: "#4F46E5", // primary
-        electricAmaro: "#10B981", // success
-        sunnyTeal: "#3B82F6", // info
+        aperitivoSpritz: "#E63946", // Tomato Red
+        electricAmaro: "#606C38", // Olive Green
+        sunnyTeal: "#FFB703", // Gold
+        tomatoRed: "#E63946",
+        oliveGreen: "#606C38",
+        parmesanGold: "#FFB703",
     },
     typography: {
         display: {
             fontFamily: "Syne_800ExtraBold",
             fontSize: 32,
+            color: "#FFFFFF",
         },
         title1: {
             fontFamily: "Syne_700Bold",
             fontSize: 24,
+            color: "#FFFFFF",
         },
         title2: {
             fontFamily: "Syne_700Bold",
-            fontSize: 20,
+            fontSize: 18,
+            color: "#FFFFFF",
         },
         body: {
             fontFamily: "Syne_500Medium",
             fontSize: 16,
+            color: "#94A3B8",
         },
         caption: {
             fontFamily: "Syne_400Regular",
             fontSize: 14,
+            color: "#94A3B8",
         },
     },
     spacing: {

@@ -460,7 +460,7 @@ export default function AddExpenseScreen({ navigation, route }) {
           {!receiptUri ? (
             <Pressable onPress={pickImage}>
               <CrumpledCard style={styles.uploadCard}>
-                <Camera size={32} color={theme.colors.aperitivoSpritz} />
+                <Camera size={32} color={theme.colors.tomatoRed} />
                 <Text style={styles.uploadText}>Snap a photo</Text>
               </CrumpledCard>
             </Pressable>
@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
   },
   actionLink: {
     ...theme.typography.caption,
-    color: theme.colors.aperitivoSpritz,
+    color: theme.colors.tomatoRed,
     fontFamily: "Syne_700Bold",
   },
   inputCard: {
@@ -576,7 +576,7 @@ const styles = StyleSheet.create({
   amountInput: {
     fontFamily: "Syne_700Bold",
     fontSize: 24,
-    color: theme.colors.aperitivoSpritz,
+    color: theme.colors.tomatoRed,
   },
   grid: {
     flexDirection: "row",
@@ -637,7 +637,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: theme.colors.aperitivoSpritz,
+    backgroundColor: theme.colors.tomatoRed,
     padding: 12,
     borderRadius: 12,
     gap: 8,
@@ -649,7 +649,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     ...theme.typography.caption,
-    color: theme.colors.aperitivoSpritz,
+    color: theme.colors.tomatoRed,
     marginTop: 8,
     marginLeft: 4,
   },

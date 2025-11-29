@@ -69,7 +69,7 @@ export default function LoginScreen({ navigation }) {
                         <Text style={styles.logoEmoji}>🍝</Text>
                         <Text style={styles.appName}>SplitBuddy</Text>
                         <Text style={styles.tagline}>
-                            Italian chaos,{"\n"}perfectly split.
+                            Italian Chaos,{"\n"}Perfectly Split.
                         </Text>
                     </View>
 
@@ -124,7 +124,7 @@ export default function LoginScreen({ navigation }) {
 
                         <View style={styles.actions}>
                             <LucaButton
-                                title={isLoading ? "Entering..." : "Enter the Chaos"}
+                                title={isLoading ? "Entering..." : "Enter the Feast"}
                                 onPress={handleLogin}
                                 disabled={isLoading}
                                 style={styles.loginButton}
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     },
     forgotPasswordText: {
         ...theme.typography.caption,
-        color: theme.colors.aperitivoSpritz,
+        color: theme.colors.tomatoRed,
         fontFamily: "Syne_700Bold",
     },
     actions: {
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     },
     linkText: {
         ...theme.typography.body,
-        color: theme.colors.aperitivoSpritz,
+        color: theme.colors.tomatoRed,
         fontFamily: "Syne_700Bold",
     },
 });

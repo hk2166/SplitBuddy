@@ -51,7 +51,7 @@ export default function ArchiveScreen({ navigation }) {
           </View>
           <View style={styles.statItem}>
             <CurrencyDollar size={20} color={theme.colors.warmAsh} />
-            <Text style={[styles.statValue, { color: theme.colors.aperitivoSpritz }]}>
+            <Text style={[styles.statValue, { color: theme.colors.tomatoRed }]}>
               ${item.totalExpenses.toFixed(0)}
             </Text>
             <Text style={styles.statLabel}>Total</Text>
@@ -68,7 +68,7 @@ export default function ArchiveScreen({ navigation }) {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <Text style={styles.title}>The Archives</Text>
+        <Text style={styles.title}>Paid Debts Hall of Fame</Text>
         <Text style={styles.subtitle}>Memories of paid debts</Text>
       </View>
 
@@ -82,10 +82,10 @@ export default function ArchiveScreen({ navigation }) {
         />
       ) : (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyIcon}>🕸️</Text>
-          <Text style={styles.emptyText}>No settled trips yet</Text>
+          <Text style={styles.emptyIcon}>🏛️</Text>
+          <Text style={styles.emptyText}>No settled feasts yet</Text>
           <Text style={styles.emptySubtext}>
-            Once you settle up, trips will appear here.
+            Get splitting!
           </Text>
         </View>
       )}
@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
   title: {
     ...theme.typography.display,
     color: theme.colors.burntInk,
+    fontSize: 28,
   },
   subtitle: {
     ...theme.typography.body,
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
   settledBadge: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: theme.colors.electricAmaro,
+    backgroundColor: theme.colors.oliveGreen,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
   },
   settledText: {
     ...theme.typography.micro,
-    color: theme.colors.burntInk,
+    color: theme.colors.white,
     textTransform: "uppercase",
   },
   groupDescription: {
